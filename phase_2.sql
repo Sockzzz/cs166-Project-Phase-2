@@ -11,33 +11,41 @@ drop table if exists updates cascade;
  
 
 create table store(	storeID integer not null unique,
-			manager_ID integer not null references manager(user_ID),
+			manager_ID integer not null,
 			name char(30) not null,
 			latitude decimal(8,6) not null,
 			longitude decimal(9,6) not null,
 			date_established date,
-			Primary Key(storeID));
+			Primary Key(storeID, manager_ID),
+			Foreign Key(manager_ID) references manager(user_ID));
 
 create table product(	p_name char(30) not null,
-			storeID integer Primary Key References store(storeID),
+			storeID integer,
 			number_units integer not null,
 			ppu integer not null,
 			description char(100),
-			image_url char(30));
+			image_url char(30),
+			Primary Key(storeID),
+			Foreign Key(storeID) references store(storeID));
 
-create table users(	user_ID integer not null unique primary key,
+create table users(	user_ID integer not null unique,
 			password char(11) not null,
 			name char(50) not null,
-			email char(50));
+			email char(50),
+			Primary key(user_ID));
 
-create table customer(	user_ID integer not null unique primary key references users(user_ID),
+create table customer(	user_ID integer not null unique,
 			credit_score integer,
 			latitude decimal(8,6) not null,
-			longitude decimal(9,6) not null);
+			longitude decimal(9,6) not null,
+			Primary Key(user_ID), 
+			Foreign Key(user_ID) references users(user_ID));
 
-create table manager(	user_ID integer not null unique primary key references users(user_ID),
+create table manager(	user_ID integer not null unique,
 			degree char(20),
-			salary integer not null);
+			salary integer not null,
+			Primary Key(user_ID),
+			Foreign Key(user_ID) references users(user_ID));
 
 create table warehouse(	warehouseID integer not null unique primary key,
 			area integer,
